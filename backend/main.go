@@ -52,29 +52,33 @@ func main() {
 	growthRepo := repository.NewGrowthRepository(db)
 	behaviorRepo := repository.NewBehaviorRepository(db)
 	battleRepo := repository.NewBattleRepository(db)
+	blindRepo := repository.NewBlindboxRepository(db)
+	classRepo := repository.NewClassRepository(db)
+
 	milestoneRepo := repository.NewMilestoneRepository(db)
 	_ = rdb // Redis 供 Service 层使用
 
 	// ─── 5. 初始化 JWT ────────────────────────────────────────
-	jwtManager := jwtpkg.NewManager(
+	jwtManager, _ := jwtpkg.NewManager(
 		cfg.JWT.Secret,
 		cfg.JWT.AccessTokenTTL,
 		cfg.JWT.RefreshTokenTTL,
 	)
 
 	// ─── 6. 初始化 Service 层 ─────────────────────────────────
-	broadcastSvc := service.NewBroadcastService(rdb)
+	broadcastSvc := service.NewBroadcastService(rdb.Client)
 	partnerSvc := service.NewPartnerService(partnerRepo, growthRepo, templateRepo, milestoneRepo, broadcastSvc)
 	authSvc := service.NewAuthService(userRepo, childRepo, jwtManager, cfg)
 	behaviorSvc := service.NewBehaviorService(behaviorRepo, partnerSvc, broadcastSvc)
-	battleSvc := service.NewBattleService(battleRepo, rdb)
-	blindboxSvc := service.NewBlindboxService(nil, db) // blindboxRepo 待实现
+	battleSvc := service.NewBattleService(battleRepo, rdb.Client)
+	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
+	classSvc := service.NewClassService(classRepo)           // blindboxRepo 待实现
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────
 	authHandler := handler.NewAuthHandler(authSvc)
 	partnerHandler := handler.NewPartnerHandler(partnerSvc)
 	behaviorHandler := handler.NewBehaviorHandler(behaviorSvc)
-	classHandler := handler.NewClassHandler(nil) // classRepo 待实现
+	classHandler := handler.NewClassHandler(classSvc) // classRepo 待实现
 	childHandler := handler.NewChildHandler(childRepo)
 	broadcastHandler := handler.NewBroadcastHandler(broadcastSvc)
 	battleHandler := handler.NewBattleHandler(battleSvc)
