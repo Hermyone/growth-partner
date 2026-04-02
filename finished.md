@@ -4,7 +4,7 @@
 
 - [x] 一、认证模块（Auth）- 5条路由
 - [x] 二、管理员模块（Admin）- 24条路由
-- [ ] 三、老师端模块（Teacher）- 22条路由
+- [x] 三、老师端模块（Teacher）- 22条路由
 - [ ] 四、学生端模块（Student）- 12条路由
 - [ ] 五、家长端模块（Parent）- 9条路由
 - [ ] 六、知识对战模块（Battle）- 6+1WS条路由
@@ -51,6 +51,34 @@
 - [x] GET /api/v1/admin/audit-logs - 查看管理员操作审计日志
 
 ### 老师端模块
+- [x] GET /api/v1/teacher/my-classes - 获取当前老师被授权的所有班级（含权限类型）
+- [x] GET /api/v1/teacher/classes/:classId/overview - 获取班级概览（学生数/行为数/成长值等）
+- [x] GET /api/v1/teacher/classes/:classId/students - 获取班级学生列表（含伙伴/成长值信息）
+- [x] POST /api/v1/teacher/behaviors - 为学生添加正向行为记录，触发成长值/伙伴进化
+- [x] GET /api/v1/teacher/behaviors - 查看班级行为记录列表（多条件筛选，分页）
+- [x] GET /api/v1/teacher/behaviors/:id - 获取单条行为记录详情
+- [x] DELETE /api/v1/teacher/behaviors/:id - 撤销行为记录（24小时内，扣减成长值）
+- [x] POST /api/v1/teacher/behaviors/batch - 批量为多个学生打分
+- [x] GET /api/v1/teacher/broadcasts - 查看自己发送的广播列表（已发/定时待发）
+- [x] POST /api/v1/teacher/broadcasts - 发送广播（立即/定时）
+- [x] DELETE /api/v1/teacher/broadcasts/:id - 取消定时广播（仅未发送）
+- [x] GET /api/v1/teacher/challenges - 查看班级当前进行中的集体挑战
+- [x] POST /api/v1/teacher/challenges - 创建集体挑战，配置条件+奖励
+- [x] PATCH /api/v1/teacher/challenges/:id/complete - 手动标记挑战完成，批量发放成长值
+- [x] GET /api/v1/teacher/questions - 查看班级题库（公共+专属）
+- [x] POST /api/v1/teacher/questions - 添加班级专属题目
+- [x] PUT /api/v1/teacher/questions/:id - 编辑题目
+- [x] DELETE /api/v1/teacher/questions/:id - 删除题目（软删除）
+- [x] POST /api/v1/teacher/questions/batch-import - 批量导入题目（CSV）
+- [x] GET /api/v1/teacher/blindbox/pool - 查看本班盲盒奖励池
+- [x] POST /api/v1/teacher/blindbox/pool - 向奖励池添加奖励
+- [x] PUT /api/v1/teacher/blindbox/pool/:id - 编辑奖励配置
+- [x] DELETE /api/v1/teacher/blindbox/pool/:id - 下架奖励（软删除）
+- [x] POST /api/v1/teacher/blindbox/draw/:childId - 为学生触发抽盲盒
+- [x] PATCH /api/v1/teacher/blindbox/draws/:drawId/redeem - 确认兑换学生盲盒奖励
+- [x] POST /api/v1/teacher/reports/weekly - 触发生成本班本周正能量周报PDF（异步）
+- [x] GET /api/v1/teacher/reports/weekly - 查看历史周报列表（含下载链接）
+- [x] GET /api/v1/teacher/reports/weekly/:id/download - 下载指定周报PDF
 
 ### 学生端模块
 

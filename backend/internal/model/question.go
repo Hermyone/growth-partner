@@ -1,5 +1,5 @@
 // growth-partner/backend/internal/model/question.go
-// 题库模型：支持多科目，老师可自定义上传
+// 题库模型
 
 package model
 
@@ -7,29 +7,27 @@ package model
 type QuestionType string
 
 const (
-	QTypeChoice QuestionType = "choice" // 选择题
-	QTypeFill   QuestionType = "fill"   // 填空题
-	QTypePoetry QuestionType = "poetry" // 诗词接龙（特殊类型）
-	QTypeMath   QuestionType = "math"   // 速算题（程序自动生成）
+	QuestionTypeSingle  QuestionType = "single"  // 单选题
+	QuestionTypeMultiple QuestionType = "multiple" // 多选题
+	QuestionTypeJudge   QuestionType = "judge"   // 判断题
+	QuestionTypeFill    QuestionType = "fill"    // 填空题
 )
 
 // Question 题库表
 type Question struct {
 	Base
 
-	ClassID uint64        `gorm:"index"           json:"class_id"` // 0=系统题库，>0=班级专属
-	Subject BattleSubject `gorm:"size:16;index;not null" json:"subject"`
-	Type    QuestionType  `gorm:"size:16;not null"       json:"type"`
-	Grade   int           `gorm:"index"                   json:"grade"` // 适合年级
-
-	Content string `gorm:"size:512;not null" json:"content"`           // 题目内容
-	Options JSON   `gorm:"type:jsonb"        json:"options"`           // 选项（选择题用）
-	Answer  string `gorm:"size:256;not null" json:"-"`                 // 答案（不暴露给学生）
-	Explain string `gorm:"size:512"          json:"explain,omitempty"` // 解析
-
-	Difficulty int    `gorm:"default:1;index" json:"difficulty"` // 1-3 难度
-	IsActive   bool   `gorm:"default:true"    json:"is_active"`
-	CreatedBy  uint64 `gorm:"index"         json:"created_by"` // 创建者（老师ID）
+	SubjectID      uint64        `gorm:"index;not null" json:"subject_id"`      // 科目ID
+	Content        string        `gorm:"type:text;not null" json:"content"`        // 题目内容
+	QuestionType   QuestionType  `gorm:"size:20;not null" json:"question_type"`   // 题目类型
+	Options        string        `gorm:"type:text" json:"options,omitempty"`       // 选项（JSON格式存储）
+	Answer         string        `gorm:"type:text;not null" json:"answer"`         // 答案
+	Explanation    string        `gorm:"type:text" json:"explanation,omitempty"`    // 解析
+	Difficulty     int           `gorm:"default:1;check:difficulty >= 1 AND difficulty <= 5" json:"difficulty"` // 难度等级（1-5）
+	IsPublic       bool          `gorm:"default:false" json:"is_public"`          // 是否为公共题目
+	ClassID        *uint64       `gorm:"index" json:"class_id,omitempty"`        // 所属班级ID（非公共题目时必填）
+	CreatedBy      uint64        `gorm:"index;not null" json:"created_by"`        // 创建人ID（老师）
+	IsActive       bool          `gorm:"default:true" json:"is_active"`           // 是否启用
 }
 
 func (Question) TableName() string { return "questions" }

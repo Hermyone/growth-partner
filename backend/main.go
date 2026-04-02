@@ -58,6 +58,10 @@ func main() {
 	adminPermissionRepo := repository.NewAdminPermissionRepository(db)
 	parentChildRepo := repository.NewParentChildRepository(db)
 	auditLogRepo := repository.NewAuditLogRepository(db)
+	broadcastRepo := repository.NewBroadcastRepository(db)
+	challengeRepo := repository.NewChallengeRepository(db)
+	questionRepo := repository.NewQuestionRepository(db)
+	reportRepo := repository.NewReportRepository(db)
 
 	milestoneRepo := repository.NewMilestoneRepository(db)
 	_ = rdb // Redis 供 Service 层使用
@@ -78,10 +82,12 @@ func main() {
 	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
 	classSvc := service.NewClassService(classRepo)           // blindboxRepo 待实现
 	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo)
+	teacherSvc := service.NewTeacherService(classRepo, childRepo, behaviorRepo, partnerRepo, broadcastRepo, challengeRepo, questionRepo, blindRepo, reportRepo, adminPermissionRepo, behaviorSvc, broadcastSvc, blindboxSvc)
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────
 	authHandler := handler.NewAuthHandler(authSvc)
 	adminHandler := handler.NewAdminHandler(adminSvc)
+	teacherHandler := handler.NewTeacherHandler(teacherSvc)
 	partnerHandler := handler.NewPartnerHandler(partnerSvc)
 	behaviorHandler := handler.NewBehaviorHandler(behaviorSvc)
 	classHandler := handler.NewClassHandler(classSvc) // classRepo 待实现
@@ -93,7 +99,7 @@ func main() {
 	// ─── 8. 注册路由 ──────────────────────────────────────────
 	r := router.SetupRouter(
 		cfg, jwtManager,
-		authHandler, adminHandler, partnerHandler, behaviorHandler,
+		authHandler, adminHandler, teacherHandler, partnerHandler, behaviorHandler,
 		classHandler, childHandler, broadcastHandler,
 		battleHandler, blindboxHandler,
 	)
