@@ -9,7 +9,6 @@ import (
 	"log"
 
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -46,26 +45,26 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 			&model.User{},
 			&model.TeacherProfile{},
 			&model.AdminPermission{},
-			
+
 			// 学籍班级模块
 			&model.School{},
 			&model.Class{},
 			&model.Child{},
 			&model.ParentChildRelation{},
-			
+
 			// 伙伴系统模块
 			&model.PartnerTemplate{},
 			&model.Partner{},
-			
+
 			// 成长记录模块
 			&model.BehaviorRecord{},
 			&model.GrowthRecord{},
 			&model.Milestone{},
-			
+
 			// 知识对战模块
 			&model.Question{},
 			&model.BattleRecord{},
-			
+
 			// 广播与盲盒模块
 			&model.BroadcastRecord{},
 			&model.BlindBoxPool{},
