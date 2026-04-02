@@ -54,6 +54,10 @@ func main() {
 	battleRepo := repository.NewBattleRepository(db)
 	blindRepo := repository.NewBlindboxRepository(db)
 	classRepo := repository.NewClassRepository(db)
+	schoolRepo := repository.NewSchoolRepository(db)
+	adminPermissionRepo := repository.NewAdminPermissionRepository(db)
+	parentChildRepo := repository.NewParentChildRepository(db)
+	auditLogRepo := repository.NewAuditLogRepository(db)
 
 	milestoneRepo := repository.NewMilestoneRepository(db)
 	_ = rdb // Redis 供 Service 层使用
@@ -73,9 +77,11 @@ func main() {
 	battleSvc := service.NewBattleService(battleRepo, rdb.Client)
 	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
 	classSvc := service.NewClassService(classRepo)           // blindboxRepo 待实现
+	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo)
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────
 	authHandler := handler.NewAuthHandler(authSvc)
+	adminHandler := handler.NewAdminHandler(adminSvc)
 	partnerHandler := handler.NewPartnerHandler(partnerSvc)
 	behaviorHandler := handler.NewBehaviorHandler(behaviorSvc)
 	classHandler := handler.NewClassHandler(classSvc) // classRepo 待实现
@@ -87,7 +93,7 @@ func main() {
 	// ─── 8. 注册路由 ──────────────────────────────────────────
 	r := router.SetupRouter(
 		cfg, jwtManager,
-		authHandler, partnerHandler, behaviorHandler,
+		authHandler, adminHandler, partnerHandler, behaviorHandler,
 		classHandler, childHandler, broadcastHandler,
 		battleHandler, blindboxHandler,
 	)

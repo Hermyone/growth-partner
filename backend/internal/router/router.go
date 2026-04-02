@@ -19,6 +19,7 @@ func SetupRouter(
 	cfg *config.Config,
 	jwtManager *jwt.Manager,
 	authHandler *handler.AuthHandler,
+	adminHandler *handler.AdminHandler,
 	partnerHandler *handler.PartnerHandler,
 	behaviorHandler *handler.BehaviorHandler,
 	classHandler *handler.ClassHandler,
@@ -55,6 +56,7 @@ func SetupRouter(
 
 	// ─── 配置各模块路由 ───────────────────────────────────────
 	SetupAuthRoutes(v1, cfg, jwtManager, authHandler)
+	SetupAdminRoutes(v1, cfg, jwtManager, adminHandler)
 
 	// ─── 公开接口（无需登录）──────────────────────────────────
 	public := v1.Group("")

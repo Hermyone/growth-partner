@@ -42,15 +42,3 @@ type User struct {
 
 // TableName 指定表名
 func (User) TableName() string { return "users" }
-
-// ParentChildRelation 家长-学生绑定关系表
-type ParentChildRelation struct {
-	Base
-	ParentUserID uint64     `gorm:"index;not null" json:"parent_user_id"`
-	ChildID      uint64     `gorm:"index;not null" json:"child_id"`
-	Relation     string     `gorm:"size:20;not null" json:"relation"` // 关系
-	IsPrimary    bool       `gorm:"default:false" json:"is_primary"` // 是否主要家长
-	VerifiedAt   *time.Time `gorm:"index" json:"verified_at,omitempty"` // 验证时间
-}
-
-func (ParentChildRelation) TableName() string { return "parent_child_relations" }
