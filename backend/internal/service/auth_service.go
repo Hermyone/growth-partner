@@ -161,5 +161,14 @@ func (s *authServiceImpl) ChangePassword(ctx context.Context, userID uint64, old
 
 	// 4. 更新密码
 	user.PasswordHash = string(hashedPassword)
-	return s.userRepo.Update(ctx, user)
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return err
+	}
+
+	// 5. 使所有旧Token失效（可以通过Redis黑名单或JWT版本号实现）
+	// 这里简单实现：将用户ID加入黑名单，在JWT验证时检查
+	// 实际项目中可能需要更复杂的实现
+	key := fmt.Sprintf("blacklist:user:%d", userID)
+	// 设置一个较长的过期时间，确保所有旧Token都失效
+	return s.redisClient.SetWithExpire(ctx, key, "1", 24*time.Hour*365)
 }

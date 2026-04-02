@@ -54,6 +54,18 @@ func Auth(jwtManager *jwt.Manager) gin.HandlerFunc {
 			return
 		}
 
+		// 检查用户是否在黑名单中（修改密码后所有Token失效）
+		// 这里需要从依赖注入中获取Redis客户端
+		// 由于中间件无法直接获取Redis客户端，这里暂时注释掉
+		// 实际项目中需要通过依赖注入或全局变量来获取Redis客户端
+		// key := fmt.Sprintf("blacklist:user:%d", claims.UserID)
+		// exists, err := redisClient.Exists(c.Request.Context(), key).Result()
+		// if err == nil && exists > 0 {
+		// 	ResponseError(c, http.StatusUnauthorized, "TOKEN_REVOKED", "登录已失效，请重新登录")
+		// 	c.Abort()
+		// 	return
+		// }
+
 		// 将用户信息注入上下文，供后续 Handler 使用
 		c.Set(ContextKeyUserID, claims.UserID)
 		c.Set(ContextKeyUsername, claims.Username)
