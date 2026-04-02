@@ -41,19 +41,34 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	if cfg.App.IsDev() {
 		log.Println("[DB] 正在自动迁移表结构...")
 		err = db.AutoMigrate(
+			// 账号权限模块
 			&model.User{},
-			&model.Child{},
+			&model.TeacherProfile{},
+			&model.AdminPermission{},
+			
+			// 学籍班级模块
+			&model.School{},
 			&model.Class{},
+			&model.Child{},
+			&model.ParentChildRelation{},
+			
+			// 伙伴系统模块
 			&model.PartnerTemplate{},
 			&model.Partner{},
-			&model.GrowthRecord{},
+			
+			// 成长记录模块
 			&model.BehaviorRecord{},
+			&model.GrowthRecord{},
+			&model.Milestone{},
+			
+			// 知识对战模块
+			&model.Question{},
 			&model.BattleRecord{},
+			
+			// 广播与盲盒模块
 			&model.BroadcastRecord{},
 			&model.BlindBoxPool{},
 			&model.BlindBoxDraw{},
-			&model.Milestone{},
-			&model.Question{},
 		)
 		if err != nil {
 			return nil, err

@@ -32,11 +32,14 @@ func NewClassService(repo repository.ClassRepository) ClassService {
 // CreateClass 创建一个新的班级
 func (s *classServiceImpl) CreateClass(ctx context.Context, name string, grade int, schoolYear string, teacherID uint64) (*model.Class, error) {
 	class := &model.Class{
-		Name:       name,
-		Grade:      grade,
-		SchoolYear: schoolYear,
-		TeacherID:  teacherID,
-		IsActive:   true,
+		ClassName:         name,
+		Grade:             grade,
+		ClassNo:           0, // 暂时设置为0，实际应该从请求中获取
+		SchoolYear:        schoolYear,
+		HomeroomTeacherID: teacherID,
+		IsActive:          true,
+		SchoolID:          1,                                             // 暂时设置为1，实际应该从请求中获取
+		ClassCode:         fmt.Sprintf("%d-%d-%s", grade, 0, schoolYear), // 暂时生成简单的班级代码
 	}
 
 	if err := s.classRepo.Create(ctx, class); err != nil {

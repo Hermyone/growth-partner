@@ -132,12 +132,14 @@ func (s *partnerServiceImpl) CreatePartner(ctx context.Context, childID, templat
 	partner := &model.Partner{
 		ChildID:          childID,
 		TemplateID:       templateID,
+		SequenceNo:       1, // 第一个伙伴
 		GrowthPoints:     0,
 		CurrentStage:     model.StageLow,
 		EvolutionCount:   0,
 		Nickname:         nickname,
 		InteractionLevel: 0,
-		IsActive:         true,
+		Status:           model.PartnerStatusActive,
+		SchoolYear:       "2024-2025", // 暂时设置为当前学年，实际应该从请求中获取
 	}
 
 	if err := s.partnerRepo.Create(ctx, partner); err != nil {
@@ -231,8 +233,8 @@ func (s *partnerServiceImpl) AddGrowthPoints(ctx context.Context, req AddGrowthP
 		Remark:             req.Remark,
 	}
 	if isEvolved {
-		growthRecord.EvolutionFromStage = fromStage
-		growthRecord.EvolutionToStage = newStage
+		growthRecord.EvolutionFromStage = &fromStage
+		growthRecord.EvolutionToStage = &newStage
 	}
 	if err := s.growthRepo.Create(ctx, growthRecord); err != nil {
 		log.Printf("[PartnerService] 警告：创建成长记录失败（不影响主流程）: %v", err)

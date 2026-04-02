@@ -13,21 +13,24 @@ type Child struct {
 	ClassID uint64 `gorm:"index;not null"       json:"class_id"`
 
 	// ─── 个人信息（加密存储） ───
-	NicknameEnc string `gorm:"size:256" json:"-"` // 昵称（加密）
-	// 对外展示使用 DisplayName（可以是昵称脱敏版本）
-	DisplayName string `gorm:"size:32;not null" json:"display_name"` // 如 "小明同学"（不含真实姓名）
+	DisplayName   string `gorm:"size:50;not null" json:"display_name"`   // 对外展示名称（不含真实姓名）
+	RealNameEnc   string `gorm:"size:255;not null" json:"-"`            // AES 加密的真实姓名
+	StudentNoEnc  string `gorm:"size:255;not null" json:"-"`            // AES 加密的学号
+	Gender        string `gorm:"type:char(1);not null;check:gender IN ('M', 'F')" json:"gender"` // 性别
+	BirthYear     int    `gorm:"not null" json:"birth_year"`            // 出生年份
 
 	// ─── 学籍信息 ───
-	StudentNumber string `gorm:"uniqueIndex;size:32" json:"-"` // 学号（加密，不暴露）
-	Grade         int    `gorm:"not null"             json:"grade"`
-	EnrollYear    int    `gorm:"not null"             json:"enroll_year"` // 入学年份
+	EnrollYear    int    `gorm:"not null" json:"enroll_year"`           // 入学年份
+	CurrentGrade  int    `gorm:"not null" json:"current_grade"`         // 当前年级
 
 	// ─── 成长统计（冗余字段，避免频繁聚合查询） ───
 	TotalGrowthPoints   int `gorm:"default:0" json:"total_growth_points"`   // 历史总成长值
 	CurrentGrowthPoints int `gorm:"default:0" json:"current_growth_points"` // 当前可用成长值
+	CurrentGloryCoins   int `gorm:"default:0" json:"current_glory_coins"`   // 当前荣耀币
 	TotalBehaviorCount  int `gorm:"default:0" json:"total_behavior_count"`  // 总行为记录次数
 	BattleCount         int `gorm:"default:0" json:"battle_count"`          // 参与对战次数
-	ConsecutiveDays     int `gorm:"default:0" json:"consecutive_days"`      // 连续打卡天数
+	ConsecutiveDays     int `gorm:"default:0" json:"consecutive_days"`      // 当前连续天数
+	MaxConsecutiveDays  int `gorm:"default:0" json:"max_consecutive_days"`  // 最大连续天数
 
 	IsActive bool `gorm:"default:true;index" json:"is_active"`
 }

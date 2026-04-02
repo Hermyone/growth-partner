@@ -32,6 +32,7 @@ type BehaviorService interface {
 type RecordBehaviorRequest struct {
 	ChildID      uint64
 	ClassID      uint64
+	SchoolYear   string // 所属学年
 	RecorderID   uint64 // 记录人ID (老师/家长)
 	RecorderRole model.RecorderRole
 	Dimension    model.BehaviorDimension
@@ -78,7 +79,8 @@ func (s *behaviorServiceImpl) RecordBehavior(ctx context.Context, req RecordBeha
 	record := &model.BehaviorRecord{
 		ChildID:        req.ChildID,
 		ClassID:        req.ClassID,
-		RecorderID:     req.RecorderID,
+		SchoolYear:     req.SchoolYear,
+		RecorderUserID: req.RecorderID,
 		RecorderRole:   req.RecorderRole,
 		Dimension:      req.Dimension,
 		Description:    req.Description,
@@ -97,7 +99,7 @@ func (s *behaviorServiceImpl) RecordBehavior(ctx context.Context, req RecordBeha
 		BehaviorID: record.ID,
 		SourceType: model.GrowthSourceBehavior,
 		Delta:      req.GrowthValue,
-		Remark:     fmt.Sprintf("因为 [%s] 获得了进步", translateDimension(req.Dimension)),
+		Remark:     fmt.Sprintf("因为 [%s] 获得了进步", getDimensionName(req.Dimension)),
 	}
 
 	growthResult, err := s.partnerSvc.AddGrowthPoints(ctx, growthReq)
@@ -124,8 +126,8 @@ func (s *behaviorServiceImpl) GetClassBehaviors(ctx context.Context, classID uin
 }
 
 // translateDimension 辅助函数
-func translateDimension(d model.BehaviorDimension) string {
-	switch d {
+func getDimensionName(dim model.BehaviorDimension) string {
+	switch dim {
 	case model.DimVirtue:
 		return "德馨"
 	case model.DimStudy:
@@ -136,10 +138,6 @@ func translateDimension(d model.BehaviorDimension) string {
 		return "美雅"
 	case model.DimLabor:
 		return "劳朴"
-	case model.DimProgress:
-		return "进步"
-	case model.DimInnovation:
-		return "创新"
 	default:
 		return "未知"
 	}
