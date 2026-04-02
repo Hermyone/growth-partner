@@ -5,8 +5,8 @@
 - [x] 一、认证模块（Auth）- 5条路由
 - [x] 二、管理员模块（Admin）- 24条路由
 - [x] 三、老师端模块（Teacher）- 22条路由
-- [ ] 四、学生端模块（Student）- 12条路由
-- [ ] 五、家长端模块（Parent）- 9条路由
+- [x] 四、学生端模块（Student）- 12条路由
+- [x] 五、家长端模块（Parent）- 9条路由
 - [ ] 六、知识对战模块（Battle）- 6+1WS条路由
 - [ ] 七、广播与实时推送模块（Broadcast/WebSocket）- 1WS条路由
 - [ ] 八、公开接口 & 伙伴模板模块 - 4+3条路由
@@ -81,8 +81,33 @@
 - [x] GET /api/v1/teacher/reports/weekly/:id/download - 下载指定周报PDF
 
 ### 学生端模块
+- [x] GET /api/v1/student/partner - 获取当前活跃伙伴详情
+- [x] GET /api/v1/student/partners - 获取所有历史伙伴列表
+- [x] POST /api/v1/student/partner - 选择新伙伴（首次/满级后），校验解锁权限
+- [x] PATCH /api/v1/student/partner/nickname - 修改当前伙伴昵称
+- [x] GET /api/v1/student/partner/growth-history - 获取伙伴成长值流水（分页）
+- [x] GET /api/v1/student/partner/templates - 获取可供选择的伙伴模板列表
+- [x] GET /api/v1/student/behaviors - 查看自己的行为记录（多条件筛选，分页）
+- [x] GET /api/v1/student/behaviors/stats - 行为统计，用于前端雷达图展示
+- [x] GET /api/v1/student/broadcasts - 获取收到的广播消息列表（伙伴+园长）
+- [x] PATCH /api/v1/student/broadcasts/:id/read - 标记广播为已读
+- [x] POST /api/v1/student/broadcasts/read-all - 一键标记所有广播为已读
+- [x] GET /api/v1/student/growth-calendar/months - 获取全部月度成长卡列表（按学年分组）
+- [x] GET /api/v1/student/growth-calendar/months/:month - 获取指定月份成长卡详情
+- [x] GET /api/v1/student/growth-calendar/annual/:year - 获取年度成长画卷数据
+- [x] GET /api/v1/student/milestones - 获取里程碑列表（勋章墙）
+- [x] GET /api/v1/student/blindbox/my-draws - 查看自己已抽到的盲盒奖励（含状态）
 
 ### 家长端模块
+- [x] GET /api/v1/parent/children - 获取自己绑定的孩子列表
+- [x] GET /api/v1/parent/children/:childId/partner - 查看孩子当前伙伴状态
+- [x] GET /api/v1/parent/children/:childId/partners - 查看孩子的历史伙伴列表
+- [x] GET /api/v1/parent/children/:childId/behaviors - 查看孩子的正向行为记录
+- [x] GET /api/v1/parent/children/:childId/broadcasts - 查看孩子收到的伙伴鼓励广播
+- [x] GET /api/v1/parent/children/:childId/milestones - 查看孩子的里程碑贴纸
+- [x] GET /api/v1/parent/children/:childId/monthly-card - 查看孩子本月/历史月度成长卡
+- [x] GET /api/v1/parent/children/:childId/annual-report - 查看孩子年度成长画卷（含PDF下载）
+- [x] GET /api/v1/parent/children/:childId/battles - 查看孩子的对战参与记录
 
 ### 知识对战模块
 

@@ -84,12 +84,14 @@ func main() {
 	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo, templateRepo)
 	teacherSvc := service.NewTeacherService(classRepo, childRepo, behaviorRepo, partnerRepo, broadcastRepo, challengeRepo, questionRepo, blindRepo, reportRepo, adminPermissionRepo, behaviorSvc, broadcastSvc, blindboxSvc)
 	studentSvc := service.NewStudentService(partnerRepo, growthRepo, templateRepo, behaviorRepo, broadcastRepo, milestoneRepo, blindRepo, childRepo)
+	parentSvc := service.NewParentService(parentChildRepo, childRepo, partnerRepo, behaviorRepo, broadcastRepo, milestoneRepo, battleRepo)
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────
 	authHandler := handler.NewAuthHandler(authSvc)
 	adminHandler := handler.NewAdminHandler(adminSvc)
 	teacherHandler := handler.NewTeacherHandler(teacherSvc)
 	studentHandler := handler.NewStudentHandler(studentSvc)
+	parentHandler := handler.NewParentHandler(parentSvc)
 	partnerHandler := handler.NewPartnerHandler(partnerSvc)
 	behaviorHandler := handler.NewBehaviorHandler(behaviorSvc)
 	classHandler := handler.NewClassHandler(classSvc) // classRepo 待实现
@@ -101,7 +103,7 @@ func main() {
 	// ─── 8. 注册路由 ──────────────────────────────────────────
 	r := router.SetupRouter(
 		cfg, jwtManager,
-		authHandler, adminHandler, teacherHandler, studentHandler, partnerHandler, behaviorHandler,
+		authHandler, adminHandler, teacherHandler, studentHandler, parentHandler, partnerHandler, behaviorHandler,
 		classHandler, childHandler, broadcastHandler,
 		battleHandler, blindboxHandler,
 	)
