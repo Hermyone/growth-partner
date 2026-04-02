@@ -30,6 +30,9 @@ func SetupRouter(
 	broadcastHandler *handler.BroadcastHandler,
 	battleHandler *handler.BattleHandler,
 	blindboxHandler *handler.BlindboxHandler,
+	wsHandler *handler.WebSocketHandler,
+	templateHandler *handler.PartnerTemplateHandler,
+	sunshineHandler *handler.SunshineHandler,
 ) *gin.Engine {
 
 	// 生产环境关闭调试日志
@@ -49,8 +52,8 @@ func SetupRouter(
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  "ok",
-			"service": "成长伙伴",
-			"version": "1.0.0",
+			"service": config.Get().App.Name,
+			"version": config.Get().App.Version,
 		})
 	})
 
@@ -63,6 +66,10 @@ func SetupRouter(
 	SetupTeacherRoutes(v1, cfg, jwtManager, teacherHandler, behaviorHandler, broadcastHandler, blindboxHandler)
 	RegisterStudentRoutes(v1, studentHandler)
 	RegisterParentRoutes(v1, parentHandler)
+	RegisterBattleRoutes(v1, battleHandler)
+	RegisterWebSocketRoutes(v1, wsHandler, jwtManager)
+	RegisterPartnerTemplateRoutes(v1, templateHandler)
+	RegisterSunshineRoutes(v1, sunshineHandler)
 
 	// ─── 公开接口（无需登录）──────────────────────────────────
 	public := v1.Group("")
@@ -70,72 +77,6 @@ func SetupRouter(
 		// 伙伴模板（公开，供选伙伴时展示）
 		public.GET("/partner-templates", partnerHandler.ListTemplates)
 		public.GET("/partner-templates/:id", partnerHandler.GetTemplate)
-	}
-
-	// ─── 需要认证的接口（通用）───────────────────────────────
-	authRequired := v1.Group("", middleware.Auth(jwtManager))
-	{
-		// 伙伴接口（学生可用）
-		partnerGroup := authRequired.Group("/partner")
-		{
-			partnerGroup.GET("", middleware.RequireStudent(), partnerHandler.GetMyPartner)
-			partnerGroup.POST("", middleware.RequireStudent(), partnerHandler.CreatePartner)
-			partnerGroup.PATCH("/nickname", middleware.RequireStudent(), partnerHandler.UpdateNickname)
-			partnerGroup.GET("/growth-history", middleware.RequireStudent(), partnerHandler.GetGrowthHistory)
-		}
-
-		// 对战接口（学生可用）
-		battleGroup := authRequired.Group("/battle")
-		{
-			battleGroup.POST("/room", middleware.RequireStudent(), battleHandler.CreateRoom)
-			battleGroup.POST("/room/:roomId/join", middleware.RequireStudent(), battleHandler.JoinRoom)
-			battleGroup.GET("/ws", middleware.RequireStudent(), battleHandler.WebSocketUpgrade)
-			battleGroup.GET("/history", middleware.RequireStudent(), battleHandler.GetMyHistory)
-		}
-
-		// 广播接口
-		broadcastGroup := authRequired.Group("/broadcast")
-		{
-			broadcastGroup.GET("/ws", broadcastHandler.WebSocketUpgrade) // WebSocket 连接
-			broadcastGroup.GET("/list", broadcastHandler.GetBroadcastList)
-			broadcastGroup.PATCH("/:id/read", broadcastHandler.MarkAsRead)
-			// 园长发送广播（仅教师）
-			broadcastGroup.POST("", middleware.RequireTeacher(), broadcastHandler.Send)
-		}
-
-		// 家长端接口
-		parentGroup := authRequired.Group("/parent", middleware.RequireParent())
-		{
-			parentGroup.GET("/children", childHandler.GetMyChildren)
-			parentGroup.GET("/children/:childId/partner", partnerHandler.GetChildPartner)
-			parentGroup.GET("/children/:childId/behaviors", behaviorHandler.GetChildBehaviors)
-		}
-	}
-
-	// ─── 教师/园长端接口 ─────────────────────────────────────
-	teacherAPI := v1.Group("/teacher",
-		middleware.Auth(jwtManager),
-		middleware.RequireTeacher(),
-	)
-	{
-		// 班级管理
-		teacherAPI.GET("/classes", classHandler.GetMyClasses)
-		teacherAPI.POST("/classes", classHandler.CreateClass)
-		teacherAPI.GET("/classes/:classId/students", childHandler.GetClassStudents)
-		teacherAPI.GET("/classes/:classId/overview", partnerHandler.GetClassOverview)
-
-		// 行为记录（老师给学生加成长值的核心接口）
-		teacherAPI.POST("/behaviors", behaviorHandler.RecordBehavior)
-		teacherAPI.GET("/behaviors", behaviorHandler.GetClassBehaviors)
-
-		// 盲盒管理
-		blindboxGroup := teacherAPI.Group("/blindbox")
-		{
-			blindboxGroup.GET("/pool", blindboxHandler.GetPool)
-			blindboxGroup.POST("/pool", blindboxHandler.AddToPool)
-			blindboxGroup.DELETE("/pool/:id", blindboxHandler.RemoveFromPool)
-			blindboxGroup.POST("/draw", blindboxHandler.DrawForStudent) // 教师代学生开盲盒
-		}
 	}
 
 	return r

@@ -62,6 +62,7 @@ func main() {
 	challengeRepo := repository.NewChallengeRepository(db)
 	questionRepo := repository.NewQuestionRepository(db)
 	reportRepo := repository.NewReportRepository(db)
+	sunshineRepo := repository.NewSunshineRepository(db)
 
 	milestoneRepo := repository.NewMilestoneRepository(db)
 	_ = rdb // Redis 供 Service 层使用
@@ -78,13 +79,15 @@ func main() {
 	partnerSvc := service.NewPartnerService(partnerRepo, growthRepo, templateRepo, milestoneRepo, broadcastSvc)
 	authSvc := service.NewAuthService(userRepo, childRepo, jwtManager, cfg, rdb)
 	behaviorSvc := service.NewBehaviorService(behaviorRepo, partnerSvc, broadcastSvc)
-	battleSvc := service.NewBattleService(battleRepo, rdb.Client)
+	battleSvc := service.NewBattleService(battleRepo, questionRepo, childRepo)
 	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
 	classSvc := service.NewClassService(classRepo)           // blindboxRepo 待实现
 	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo, templateRepo)
 	teacherSvc := service.NewTeacherService(classRepo, childRepo, behaviorRepo, partnerRepo, broadcastRepo, challengeRepo, questionRepo, blindRepo, reportRepo, adminPermissionRepo, behaviorSvc, broadcastSvc, blindboxSvc)
 	studentSvc := service.NewStudentService(partnerRepo, growthRepo, templateRepo, behaviorRepo, broadcastRepo, milestoneRepo, blindRepo, childRepo)
 	parentSvc := service.NewParentService(parentChildRepo, childRepo, partnerRepo, behaviorRepo, broadcastRepo, milestoneRepo, battleRepo)
+	templateSvc := service.NewPartnerTemplateService(templateRepo)
+	sunshineSvc := service.NewSunshineService(sunshineRepo, classRepo, childRepo, parentChildRepo)
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────
 	authHandler := handler.NewAuthHandler(authSvc)
@@ -99,13 +102,16 @@ func main() {
 	broadcastHandler := handler.NewBroadcastHandler(broadcastSvc)
 	battleHandler := handler.NewBattleHandler(battleSvc)
 	blindboxHandler := handler.NewBlindboxHandler(blindboxSvc)
+	wsHandler := handler.NewWebSocketHandler()
+	templateHandler := handler.NewPartnerTemplateHandler(templateSvc)
+	sunshineHandler := handler.NewSunshineHandler(sunshineSvc)
 
 	// ─── 8. 注册路由 ──────────────────────────────────────────
 	r := router.SetupRouter(
 		cfg, jwtManager,
 		authHandler, adminHandler, teacherHandler, studentHandler, parentHandler, partnerHandler, behaviorHandler,
 		classHandler, childHandler, broadcastHandler,
-		battleHandler, blindboxHandler,
+		battleHandler, blindboxHandler, wsHandler, templateHandler, sunshineHandler,
 	)
 
 	// ─── 9. 启动 HTTP 服务 ────────────────────────────────────

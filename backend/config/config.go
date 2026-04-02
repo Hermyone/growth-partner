@@ -13,11 +13,16 @@ import (
 
 // Config 全局配置结构体
 type Config struct {
-	App     AppConfig
-	DB      DBConfig
-	Redis   RedisConfig
-	JWT     JWTConfig
-	Encrypt EncryptConfig
+	App      AppConfig
+	DB       DBConfig
+	Redis    RedisConfig
+	JWT      JWTConfig
+	Encrypt  EncryptConfig
+	Behavior BehaviorConfig
+	Partner  PartnerConfig
+	Battle   BattleConfig
+	Sunshine SunshineConfig
+	Student  StudentConfig
 }
 
 // AppConfig 应用基础配置
@@ -25,11 +30,44 @@ type AppConfig struct {
 	Env          string // "development" | "production"
 	Port         int
 	Name         string
+	Version      string
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 }
 
-// DBConfig PostgreSQL 配置
+// BehaviorConfig 行为相关配置
+type BehaviorConfig struct {
+	Dimensions    map[string]int
+	DefaultLimit  int
+	DefaultOffset int
+}
+
+// PartnerConfig 伙伴相关配置
+type PartnerConfig struct {
+	InitialSequenceNo   int
+	InitialGrowthPoints int
+	InitialStage        int
+	DefaultSchoolYear   string
+}
+
+// BattleConfig 对战相关配置
+type BattleConfig struct {
+	RoomCodeLength   int
+	DefaultCreatorID uint64
+}
+
+// SunshineConfig 阳光章相关配置
+type SunshineConfig struct {
+	ColorMap map[uint64]string
+}
+
+// StudentConfig 学生相关配置
+type StudentConfig struct {
+	DefaultTotalBehaviors    int
+	DefaultTotalGrowthPoints int
+}
+
+// DBConfig 数据库配置
 type DBConfig struct {
 	Host         string
 	Port         int
@@ -40,6 +78,7 @@ type DBConfig struct {
 	MaxOpenConns int
 	MaxIdleConns int
 	MaxLifetime  time.Duration
+	UseSQLite    bool
 }
 
 // RedisConfig Redis 配置
@@ -73,20 +112,60 @@ func Load() *Config {
 		App: AppConfig{
 			Env:          getEnv("APP_ENV", "development"),
 			Port:         getEnvInt("APP_PORT", 8080),
-			Name:         "成长伙伴",
+			Name:         getEnv("APP_NAME", "成长伙伴"),
+			Version:      getEnv("APP_VERSION", "1.0.0"),
 			ReadTimeout:  30 * time.Second,
 			WriteTimeout: 30 * time.Second,
+		},
+		Behavior: BehaviorConfig{
+			Dimensions: map[string]int{
+				"德馨": 10,
+				"智睿": 15,
+				"体健": 8,
+				"美雅": 5,
+				"劳朴": 7,
+				"进步": 12,
+				"创新": 3,
+			},
+			DefaultLimit:  10,
+			DefaultOffset: 0,
+		},
+		Partner: PartnerConfig{
+			InitialSequenceNo:   1,
+			InitialGrowthPoints: 0,
+			InitialStage:        1,
+			DefaultSchoolYear:   "2026-2027",
+		},
+		Battle: BattleConfig{
+			RoomCodeLength:   6,
+			DefaultCreatorID: 1,
+		},
+		Sunshine: SunshineConfig{
+			ColorMap: map[uint64]string{
+				1: "红色",
+				2: "橙色",
+				3: "黄色",
+				4: "绿色",
+				5: "青色",
+				6: "蓝色",
+				7: "紫色",
+			},
+		},
+		Student: StudentConfig{
+			DefaultTotalBehaviors:    50,
+			DefaultTotalGrowthPoints: 120,
 		},
 		DB: DBConfig{
 			Host:         getEnv("DB_HOST", "localhost"),
 			Port:         getEnvInt("DB_PORT", 5432),
-			Name:         getEnv("DB_NAME", "growth_partner"),
+			Name:         getEnv("DB_NAME", "growth_partner.db"),
 			User:         getEnv("DB_USER", "gp_user"),
 			Password:     getEnv("DB_PASSWORD", ""),
 			SSLMode:      getEnv("DB_SSL_MODE", "disable"),
 			MaxOpenConns: getEnvInt("DB_MAX_OPEN_CONNS", 25),
 			MaxIdleConns: getEnvInt("DB_MAX_IDLE_CONNS", 5),
 			MaxLifetime:  5 * time.Minute,
+			UseSQLite:    true,
 		},
 		Redis: RedisConfig{
 			Host:     getEnv("REDIS_HOST", "localhost"),

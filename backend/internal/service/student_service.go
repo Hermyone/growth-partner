@@ -8,6 +8,7 @@ import (
 	"errors"
 	"time"
 
+	"growth-partner/config"
 	"growth-partner/internal/model"
 	"growth-partner/internal/repository"
 )
@@ -129,12 +130,12 @@ func (s *studentServiceImpl) SelectNewPartner(ctx context.Context, studentID, te
 	newPartner := &model.Partner{
 		ChildID:      studentID,
 		TemplateID:   templateID,
-		SequenceNo:   1, // 初始序列号
+		SequenceNo:   config.Get().Partner.InitialSequenceNo, // 初始序列号
 		Nickname:     template.Name,
 		Status:       model.PartnerStatusActive,
-		GrowthPoints: 0,
-		CurrentStage: 1,           // 初始阶段
-		SchoolYear:   "2026-2027", // 暂时硬编码，后续需要从配置或参数中获取
+		GrowthPoints: config.Get().Partner.InitialGrowthPoints,
+		CurrentStage: model.EvolutionStage(config.Get().Partner.InitialStage),           // 初始阶段
+		SchoolYear:   config.Get().Partner.DefaultSchoolYear, // 从配置中获取
 		SelectedAt:   &now,
 	}
 
@@ -148,8 +149,8 @@ func (s *studentServiceImpl) UpdatePartnerNickname(ctx context.Context, studentI
 
 func (s *studentServiceImpl) GetPartnerGrowthHistory(ctx context.Context, studentID uint64, params map[string]interface{}) ([]*model.GrowthRecord, int64, error) {
 	// 解析分页参数
-	limit := 10
-	offset := 0
+	limit := config.Get().Behavior.DefaultLimit
+	offset := config.Get().Behavior.DefaultOffset
 	if l, ok := params["limit"].(int); ok && l > 0 {
 		limit = l
 	}
@@ -169,8 +170,8 @@ func (s *studentServiceImpl) GetPartnerTemplates(ctx context.Context) ([]*model.
 
 func (s *studentServiceImpl) GetMyBehaviors(ctx context.Context, studentID uint64, params map[string]interface{}) ([]*model.BehaviorRecord, int64, error) {
 	// 解析分页参数
-	limit := 10
-	offset := 0
+	limit := config.Get().Behavior.DefaultLimit
+	offset := config.Get().Behavior.DefaultOffset
 	if l, ok := params["limit"].(int); ok && l > 0 {
 		limit = l
 	}
@@ -186,17 +187,9 @@ func (s *studentServiceImpl) GetBehaviorStats(ctx context.Context, studentID uin
 	// 这里可以根据实际需求实现统计逻辑
 	// 例如：按维度统计行为次数、成长值等
 	return map[string]interface{}{
-		"dimensions": map[string]int{
-			"德馨": 10,
-			"智睿": 15,
-			"体健": 8,
-			"美雅": 5,
-			"劳朴": 7,
-			"进步": 12,
-			"创新": 3,
-		},
-		"totalBehaviors":    50,
-		"totalGrowthPoints": 120,
+		"dimensions":        config.Get().Behavior.Dimensions,
+		"totalBehaviors":    config.Get().Student.DefaultTotalBehaviors,
+		"totalGrowthPoints": config.Get().Student.DefaultTotalGrowthPoints,
 	}, nil
 }
 
