@@ -16,6 +16,7 @@ type ParentChildRepository interface {
 	FindByParentID(ctx context.Context, parentID uint64) ([]*model.ParentChildRelation, error)
 	FindByChildID(ctx context.Context, childID uint64) ([]*model.ParentChildRelation, error)
 	Delete(ctx context.Context, id uint64) error
+	SetAllNonPrimary(ctx context.Context, childID uint64) error
 	Count(ctx context.Context, params map[string]interface{}) (int64, error)
 }
 
@@ -123,4 +124,9 @@ func (r *parentChildRepositoryImpl) Count(ctx context.Context, params map[string
 	}
 
 	return count, db.Count(&count).Error
+}
+
+// SetAllNonPrimary 将指定学生的所有绑定设置为非主绑定
+func (r *parentChildRepositoryImpl) SetAllNonPrimary(ctx context.Context, childID uint64) error {
+	return r.db.WithContext(ctx).Model(&model.ParentChildRelation{}).Where("child_id = ?", childID).Update("is_primary", false).Error
 }

@@ -17,6 +17,7 @@ type SchoolRepository interface {
 	Update(ctx context.Context, school *model.School) error
 	UpdateStatus(ctx context.Context, id uint64, isActive bool) error
 	Count(ctx context.Context, params map[string]interface{}) (int64, error)
+	BeginTx(ctx context.Context) *gorm.DB
 }
 
 type schoolRepositoryImpl struct {
@@ -103,4 +104,9 @@ func (r *schoolRepositoryImpl) Count(ctx context.Context, params map[string]inte
 	}
 
 	return count, db.Count(&count).Error
+}
+
+// BeginTx 开始一个新的事务
+func (r *schoolRepositoryImpl) BeginTx(ctx context.Context) *gorm.DB {
+	return r.db.WithContext(ctx).Begin()
 }

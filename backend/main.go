@@ -81,7 +81,7 @@ func main() {
 	battleSvc := service.NewBattleService(battleRepo, rdb.Client)
 	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
 	classSvc := service.NewClassService(classRepo)           // blindboxRepo 待实现
-	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo)
+	adminSvc := service.NewAdminService(schoolRepo, classRepo, userRepo, childRepo, parentChildRepo, adminPermissionRepo, auditLogRepo, templateRepo)
 	teacherSvc := service.NewTeacherService(classRepo, childRepo, behaviorRepo, partnerRepo, broadcastRepo, challengeRepo, questionRepo, blindRepo, reportRepo, adminPermissionRepo, behaviorSvc, broadcastSvc, blindboxSvc)
 
 	// ─── 7. 初始化 Handler 层 ─────────────────────────────────

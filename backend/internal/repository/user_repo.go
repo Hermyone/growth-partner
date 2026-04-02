@@ -13,6 +13,7 @@ type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	FindByUsername(ctx context.Context, username string) (*model.User, error)
 	FindByID(ctx context.Context, id uint64) (*model.User, error)
+	FindAll(ctx context.Context, params map[string]interface{}) ([]*model.User, int64, error)
 	Update(ctx context.Context, user *model.User) error
 }
 
@@ -45,4 +46,47 @@ func (r *userRepositoryImpl) FindByID(ctx context.Context, id uint64) (*model.Us
 
 func (r *userRepositoryImpl) Update(ctx context.Context, user *model.User) error {
 	return r.db.WithContext(ctx).Save(user).Error
+}
+
+// FindAll 查询所有用户（支持过滤、分页）
+func (r *userRepositoryImpl) FindAll(ctx context.Context, params map[string]interface{}) ([]*model.User, int64, error) {
+	var users []*model.User
+	db := r.db.WithContext(ctx)
+
+	// 应用过滤条件
+	if role, ok := params["role"].(string); ok && role != "" {
+		db = db.Where("role = ?", role)
+	}
+	if username, ok := params["username"].(string); ok && username != "" {
+		db = db.Where("username LIKE ?", "%"+username+"%")
+	}
+	if isActive, ok := params["is_active"].(bool); ok {
+		db = db.Where("is_active = ?", isActive)
+	}
+
+	// 分页
+	var count int64
+	if err := db.Model(&model.User{}).Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 排序
+	order := "created_at DESC"
+	if o, ok := params["order"].(string); ok && o != "" {
+		order = o
+	}
+	db = db.Order(order)
+
+	// 分页
+	if page, ok := params["page"].(int); ok && page > 0 {
+		limit := 10
+		if l, ok := params["limit"].(int); ok && l > 0 {
+			limit = l
+		}
+		offset := (page - 1) * limit
+		db = db.Offset(offset).Limit(limit)
+	}
+
+	err := db.Find(&users).Error
+	return users, count, err
 }

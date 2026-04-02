@@ -5,14 +5,16 @@ package repository
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"growth-partner/internal/model"
+
+	"gorm.io/gorm"
 )
 
 type TemplateRepository interface {
 	FindAllActive(ctx context.Context) ([]*model.PartnerTemplate, error)
 	FindByID(ctx context.Context, id uint64) (*model.PartnerTemplate, error)
 	Create(ctx context.Context, template *model.PartnerTemplate) error
+	Update(ctx context.Context, template *model.PartnerTemplate) error
 }
 
 type templateRepositoryImpl struct {
@@ -46,4 +48,9 @@ func (r *templateRepositoryImpl) FindByID(ctx context.Context, id uint64) (*mode
 // Create 初始化模板数据（用于系统启动时的 Seed 数据）
 func (r *templateRepositoryImpl) Create(ctx context.Context, template *model.PartnerTemplate) error {
 	return r.db.WithContext(ctx).Create(template).Error
+}
+
+// Update 更新模板信息
+func (r *templateRepositoryImpl) Update(ctx context.Context, template *model.PartnerTemplate) error {
+	return r.db.WithContext(ctx).Save(template).Error
 }

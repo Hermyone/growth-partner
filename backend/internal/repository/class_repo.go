@@ -21,6 +21,7 @@ type ClassRepository interface {
 	UpdateStatus(ctx context.Context, id uint64, isActive bool) error
 	Count(ctx context.Context, params map[string]interface{}) (int64, error)
 	FindByClassCode(ctx context.Context, classCode string) (*model.Class, error)
+	BeginTx(ctx context.Context) *gorm.DB
 }
 
 type classRepositoryImpl struct {
@@ -148,4 +149,9 @@ func (r *classRepositoryImpl) FindByClassCode(ctx context.Context, classCode str
 		return nil, err
 	}
 	return &class, nil
+}
+
+// BeginTx 开始一个新的事务
+func (r *classRepositoryImpl) BeginTx(ctx context.Context) *gorm.DB {
+	return r.db.WithContext(ctx).Begin()
 }

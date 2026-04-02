@@ -224,3 +224,26 @@ func (h *AdminHandler) GetAuditLogs(c *gin.Context) {
 	// TODO: 实现查看管理员操作审计日志功能
 	middleware.ResponseOKWithMessage(c, "查看管理员操作审计日志接口待实现", nil)
 }
+
+// ─── 伙伴模板管理 ──────────────────────────────────────────────
+
+// CreatePartnerTemplate 新增伙伴模板
+// POST /api/v1/admin/partner-templates
+func (h *AdminHandler) CreatePartnerTemplate(c *gin.Context) {
+	// TODO: 实现新增伙伴模板功能
+	middleware.ResponseOKWithMessage(c, "新增伙伴模板接口待实现", nil)
+}
+
+// UpdatePartnerTemplate 更新模板信息（资源/鼓励语/启停）
+// PUT /api/v1/admin/partner-templates/:id
+func (h *AdminHandler) UpdatePartnerTemplate(c *gin.Context) {
+	// TODO: 实现更新模板信息功能
+	middleware.ResponseOKWithMessage(c, "更新模板信息接口待实现", nil)
+}
+
+// SeedPartnerTemplates 一键初始化30个预设模板（幂等）
+// POST /api/v1/admin/partner-templates/seed
+func (h *AdminHandler) SeedPartnerTemplates(c *gin.Context) {
+	// TODO: 实现一键初始化预设模板功能
+	middleware.ResponseOKWithMessage(c, "一键初始化预设模板接口待实现", nil)
+}

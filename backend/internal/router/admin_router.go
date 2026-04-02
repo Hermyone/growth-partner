@@ -83,5 +83,13 @@ func SetupAdminRoutes(
 		// 2.7 数据概览
 		adminAPI.GET("/dashboard", adminHandler.GetDashboard)
 		adminAPI.GET("/audit-logs", adminHandler.GetAuditLogs)
+
+		// 2.8 伙伴模板管理
+		templateGroup := adminAPI.Group("/partner-templates")
+		{
+			templateGroup.POST("", adminHandler.CreatePartnerTemplate)
+			templateGroup.PUT("/:id", adminHandler.UpdatePartnerTemplate)
+			templateGroup.POST("/seed", adminHandler.SeedPartnerTemplates)
+		}
 	}
 }
