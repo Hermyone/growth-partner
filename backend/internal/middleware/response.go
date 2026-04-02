@@ -41,6 +41,17 @@ func ResponseOK(c *gin.Context, data interface{}) {
 	})
 }
 
+// ResponseSuccess 返回成功响应（HTTP 200）
+func ResponseSuccess(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusOK, Response{
+		Code:      0,
+		Message:   "success",
+		Data:      data,
+		Timestamp: time.Now().UnixMilli(),
+		RequestID: c.GetString("request_id"),
+	})
+}
+
 // ResponseOKWithMessage 返回带自定义消息的成功响应
 func ResponseOKWithMessage(c *gin.Context, message string, data interface{}) {
 	c.JSON(http.StatusOK, Response{

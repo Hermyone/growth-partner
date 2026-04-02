@@ -21,6 +21,7 @@ func SetupRouter(
 	authHandler *handler.AuthHandler,
 	adminHandler *handler.AdminHandler,
 	teacherHandler *handler.TeacherHandler,
+	studentHandler *handler.StudentHandler,
 	partnerHandler *handler.PartnerHandler,
 	behaviorHandler *handler.BehaviorHandler,
 	classHandler *handler.ClassHandler,
@@ -59,6 +60,7 @@ func SetupRouter(
 	SetupAuthRoutes(v1, cfg, jwtManager, authHandler)
 	SetupAdminRoutes(v1, cfg, jwtManager, adminHandler)
 	SetupTeacherRoutes(v1, cfg, jwtManager, teacherHandler, behaviorHandler, broadcastHandler, blindboxHandler)
+	RegisterStudentRoutes(v1, studentHandler)
 
 	// ─── 公开接口（无需登录）──────────────────────────────────
 	public := v1.Group("")
