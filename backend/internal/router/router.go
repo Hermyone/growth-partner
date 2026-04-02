@@ -53,14 +53,12 @@ func SetupRouter(
 	// ─── API v1 路由组 ────────────────────────────────────────
 	v1 := r.Group("/api/v1")
 
+	// ─── 配置各模块路由 ───────────────────────────────────────
+	SetupAuthRoutes(v1, cfg, jwtManager, authHandler)
+
 	// ─── 公开接口（无需登录）──────────────────────────────────
 	public := v1.Group("")
 	{
-		auth := public.Group("/auth")
-		{
-			auth.POST("/login", authHandler.Login)
-			auth.POST("/refresh", authHandler.RefreshToken)
-		}
 		// 伙伴模板（公开，供选伙伴时展示）
 		public.GET("/partner-templates", partnerHandler.ListTemplates)
 		public.GET("/partner-templates/:id", partnerHandler.GetTemplate)

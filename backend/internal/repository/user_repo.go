@@ -4,14 +4,16 @@ package repository
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"growth-partner/internal/model"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	FindByUsername(ctx context.Context, username string) (*model.User, error)
 	FindByID(ctx context.Context, id uint64) (*model.User, error)
+	Update(ctx context.Context, user *model.User) error
 }
 
 type userRepositoryImpl struct {
@@ -39,4 +41,8 @@ func (r *userRepositoryImpl) FindByID(ctx context.Context, id uint64) (*model.Us
 	var user model.User
 	err := r.db.WithContext(ctx).First(&user, id).Error
 	return &user, err
+}
+
+func (r *userRepositoryImpl) Update(ctx context.Context, user *model.User) error {
+	return r.db.WithContext(ctx).Save(user).Error
 }
