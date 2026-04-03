@@ -71,13 +71,5 @@ func SetupRouter(
 	RegisterPartnerTemplateRoutes(v1, templateHandler)
 	RegisterSunshineRoutes(v1, sunshineHandler)
 
-	// ─── 公开接口（无需登录）──────────────────────────────────
-	public := v1.Group("")
-	{
-		// 伙伴模板（公开，供选伙伴时展示）
-		public.GET("/partner-templates", partnerHandler.ListTemplates)
-		public.GET("/partner-templates/:id", partnerHandler.GetTemplate)
-	}
-
 	return r
 }

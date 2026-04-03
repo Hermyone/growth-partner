@@ -36,7 +36,12 @@ func (h *ParentHandler) GetMyChildren(c *gin.Context) {
 	}
 
 	// 调用服务获取绑定的孩子列表
-	children, err := h.parentSvc.GetMyChildren(c.Request.Context(), parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	children, err := h.parentSvc.GetMyChildren(c.Request.Context(), parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -62,7 +67,12 @@ func (h *ParentHandler) GetChildPartner(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的伙伴
-	partner, err := h.parentSvc.GetChildPartner(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	partner, err := h.parentSvc.GetChildPartner(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -88,7 +98,12 @@ func (h *ParentHandler) GetChildPartners(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的历史伙伴列表
-	partners, err := h.parentSvc.GetChildPartners(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	partners, err := h.parentSvc.GetChildPartners(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -132,7 +147,12 @@ func (h *ParentHandler) GetChildBehaviors(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的行为记录
-	behaviors, total, err := h.parentSvc.GetChildBehaviors(c.Request.Context(), childID, parentID.(uint64), params)
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	behaviors, total, err := h.parentSvc.GetChildBehaviors(c.Request.Context(), childID, parentIDUint, params)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -161,7 +181,12 @@ func (h *ParentHandler) GetChildBroadcasts(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子收到的广播
-	broadcasts, err := h.parentSvc.GetChildBroadcasts(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	broadcasts, err := h.parentSvc.GetChildBroadcasts(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -187,7 +212,12 @@ func (h *ParentHandler) GetChildMilestones(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的里程碑
-	milestones, err := h.parentSvc.GetChildMilestones(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	milestones, err := h.parentSvc.GetChildMilestones(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -220,7 +250,12 @@ func (h *ParentHandler) GetChildMonthlyCard(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的月度成长卡
-	card, err := h.parentSvc.GetChildMonthlyCard(c.Request.Context(), childID, parentID.(uint64), month)
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	card, err := h.parentSvc.GetChildMonthlyCard(c.Request.Context(), childID, parentIDUint, month)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -253,7 +288,12 @@ func (h *ParentHandler) GetChildAnnualReport(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的年度成长画卷
-	report, err := h.parentSvc.GetChildAnnualReport(c.Request.Context(), childID, parentID.(uint64), year)
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	report, err := h.parentSvc.GetChildAnnualReport(c.Request.Context(), childID, parentIDUint, year)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -279,7 +319,12 @@ func (h *ParentHandler) GetChildBattles(c *gin.Context) {
 	}
 
 	// 调用服务获取孩子的对战参与记录
-	battles, err := h.parentSvc.GetChildBattles(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	battles, err := h.parentSvc.GetChildBattles(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return

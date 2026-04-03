@@ -41,7 +41,12 @@ func (h *TeacherHandler) GetMyClasses(c *gin.Context) {
 	}
 
 	// 调用服务获取班级列表
-	classes, err := h.teacherSvc.GetMyClasses(c.Request.Context(), teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	classes, err := h.teacherSvc.GetMyClasses(c.Request.Context(), teacherIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "GET_CLASSES_FAILED", "获取班级列表失败")
 		return
@@ -159,7 +164,12 @@ func (h *TeacherHandler) DeleteBehavior(c *gin.Context) {
 	}
 
 	// 调用服务撤销行为记录
-	err = h.teacherSvc.DeleteBehavior(c.Request.Context(), behaviorID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.DeleteBehavior(c.Request.Context(), behaviorID, teacherIDUint)
 	if err != nil {
 		if err == service.ErrBehaviorNotFound {
 			middleware.ResponseError(c, 404, "BEHAVIOR_NOT_FOUND", "行为记录不存在")
@@ -225,7 +235,12 @@ func (h *TeacherHandler) GetBroadcasts(c *gin.Context) {
 	}
 
 	// 调用服务获取广播列表
-	broadcasts, total, err := h.teacherSvc.GetBroadcasts(c.Request.Context(), teacherID.(uint64), params)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	broadcasts, total, err := h.teacherSvc.GetBroadcasts(c.Request.Context(), teacherIDUint, params)
 	if err != nil {
 		middleware.ResponseError(c, 500, "GET_BROADCASTS_FAILED", "获取广播列表失败")
 		return
@@ -259,7 +274,12 @@ func (h *TeacherHandler) CancelBroadcast(c *gin.Context) {
 	}
 
 	// 调用服务取消广播
-	err = h.teacherSvc.CancelBroadcast(c.Request.Context(), broadcastID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.CancelBroadcast(c.Request.Context(), broadcastID, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限操作该广播")
@@ -343,6 +363,11 @@ func (h *TeacherHandler) CreateChallenge(c *gin.Context) {
 		endAt = &parsedEndAt
 	}
 
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
 	challenge := &model.Challenge{
 		ClassID:     req.ClassID,
 		Title:       req.Title,
@@ -353,7 +378,7 @@ func (h *TeacherHandler) CreateChallenge(c *gin.Context) {
 		RewardValue: req.RewardGrowthPoints,
 		StartAt:     startAt,
 		EndAt:       endAt,
-		CreatedBy:   teacherID.(uint64),
+		CreatedBy:   teacherIDUint,
 	}
 
 	// 调用服务创建挑战
@@ -388,7 +413,12 @@ func (h *TeacherHandler) CompleteChallenge(c *gin.Context) {
 	}
 
 	// 调用服务完成挑战
-	err = h.teacherSvc.CompleteChallenge(c.Request.Context(), challengeID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.CompleteChallenge(c.Request.Context(), challengeID, teacherIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "COMPLETE_CHALLENGE_FAILED", "完成挑战失败")
 		return
@@ -484,6 +514,11 @@ func (h *TeacherHandler) CreateQuestion(c *gin.Context) {
 	// 转换ClassID为指针类型
 	classID := req.ClassID
 
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
 	question := &model.Question{
 		SubjectID:    1, // 暂时设置为1，后续需要根据实际科目ID设置
 		ClassID:      &classID,
@@ -494,7 +529,7 @@ func (h *TeacherHandler) CreateQuestion(c *gin.Context) {
 		Explanation:  req.Explanation,
 		Difficulty:   difficulty,
 		IsPublic:     false,
-		CreatedBy:    teacherID.(uint64),
+		CreatedBy:    teacherIDUint,
 		IsActive:     true,
 	}
 
@@ -569,6 +604,11 @@ func (h *TeacherHandler) UpdateQuestion(c *gin.Context) {
 	// 转换ClassID为指针类型
 	classID := req.ClassID
 
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
 	question := &model.Question{
 		Base: model.Base{
 			ID: questionID,
@@ -582,12 +622,12 @@ func (h *TeacherHandler) UpdateQuestion(c *gin.Context) {
 		Explanation:  req.Explanation,
 		Difficulty:   difficulty,
 		IsPublic:     false,
-		CreatedBy:    teacherID.(uint64),
+		CreatedBy:    teacherIDUint,
 		IsActive:     req.IsActive,
 	}
 
 	// 调用服务更新题目
-	err = h.teacherSvc.UpdateQuestion(c.Request.Context(), question, teacherID.(uint64))
+	err = h.teacherSvc.UpdateQuestion(c.Request.Context(), question, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限编辑该题目")
@@ -618,7 +658,12 @@ func (h *TeacherHandler) DeleteQuestion(c *gin.Context) {
 	}
 
 	// 调用服务删除题目
-	err = h.teacherSvc.DeleteQuestion(c.Request.Context(), questionID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.DeleteQuestion(c.Request.Context(), questionID, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限删除该题目")
@@ -653,7 +698,12 @@ func (h *TeacherHandler) BatchImportQuestions(c *gin.Context) {
 	}
 
 	// 调用服务批量导入题目
-	err := h.teacherSvc.BatchImportQuestions(c.Request.Context(), req.Questions, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.teacherSvc.BatchImportQuestions(c.Request.Context(), req.Questions, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限导入题目到该班级")
@@ -723,7 +773,12 @@ func (h *TeacherHandler) UpdateBlindboxPoolItem(c *gin.Context) {
 	}
 
 	// 调用服务更新盲盒奖励
-	err = h.teacherSvc.UpdateBlindboxPoolItem(c.Request.Context(), blindbox, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.UpdateBlindboxPoolItem(c.Request.Context(), blindbox, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限编辑该盲盒奖励")
@@ -762,7 +817,12 @@ func (h *TeacherHandler) ConfirmBlindboxRedeem(c *gin.Context) {
 	}
 
 	// 调用服务确认兑换
-	err = h.teacherSvc.ConfirmBlindboxRedeem(c.Request.Context(), drawID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.teacherSvc.ConfirmBlindboxRedeem(c.Request.Context(), drawID, teacherIDUint)
 	if err != nil {
 		if err == service.ErrTeacherUnauthorized {
 			middleware.ResponseError(c, 403, "UNAUTHORIZED", "无权限操作该盲盒奖励")
@@ -799,7 +859,12 @@ func (h *TeacherHandler) GenerateWeeklyReport(c *gin.Context) {
 	}
 
 	// 调用服务生成周报
-	err := h.teacherSvc.GenerateWeeklyReport(c.Request.Context(), req.ClassID, teacherID.(uint64))
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.teacherSvc.GenerateWeeklyReport(c.Request.Context(), req.ClassID, teacherIDUint)
 	if err != nil {
 		if err == service.ErrInvalidClassID {
 			middleware.ResponseError(c, 404, "CLASS_NOT_FOUND", "班级不存在")
@@ -843,7 +908,12 @@ func (h *TeacherHandler) GetWeeklyReports(c *gin.Context) {
 	}
 
 	// 调用服务获取周报列表
-	reports, total, err := h.teacherSvc.GetWeeklyReports(c.Request.Context(), classID, teacherID.(uint64), params)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	reports, total, err := h.teacherSvc.GetWeeklyReports(c.Request.Context(), classID, teacherIDUint, params)
 	if err != nil {
 		if err == service.ErrInvalidClassID {
 			middleware.ResponseError(c, 404, "CLASS_NOT_FOUND", "班级不存在")

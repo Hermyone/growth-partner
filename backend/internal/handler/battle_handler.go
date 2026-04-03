@@ -57,7 +57,12 @@ func (h *BattleHandler) CreateBattleRoom(c *gin.Context) {
 	}
 
 	// 调用服务创建对战房间
-	room, err := h.battleSvc.CreateBattleRoom(c.Request.Context(), studentID.(uint64), req.Subject)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	room, err := h.battleSvc.CreateBattleRoom(c.Request.Context(), studentIDUint, req.Subject)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -83,7 +88,12 @@ func (h *BattleHandler) JoinBattleRoom(c *gin.Context) {
 	}
 
 	// 调用服务加入对战房间
-	room, err := h.battleSvc.JoinBattleRoom(c.Request.Context(), studentID.(uint64), roomCode)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	room, err := h.battleSvc.JoinBattleRoom(c.Request.Context(), studentIDUint, roomCode)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -128,7 +138,12 @@ func (h *BattleHandler) GetBattleHistory(c *gin.Context) {
 	}
 
 	// 调用服务查看对战历史
-	history, err := h.battleSvc.GetBattleHistory(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	history, err := h.battleSvc.GetBattleHistory(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -154,7 +169,12 @@ func (h *BattleHandler) GetBattleReview(c *gin.Context) {
 	}
 
 	// 调用服务获取对战复盘
-	review, err := h.battleSvc.GetBattleReview(c.Request.Context(), studentID.(uint64), roomID)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	review, err := h.battleSvc.GetBattleReview(c.Request.Context(), studentIDUint, roomID)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return

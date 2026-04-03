@@ -5,7 +5,6 @@ package router
 
 import (
 	"growth-partner/internal/handler"
-	"growth-partner/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +17,5 @@ func RegisterPartnerTemplateRoutes(router *gin.RouterGroup, templateHandler *han
 	router.GET("/health", templateHandler.GetHealthStatus)
 	router.GET("/config/client", templateHandler.GetClientConfig)
 
-	// 管理员接口
-	adminRoutes := router.Group("/admin")
-	adminRoutes.Use(middleware.RequireRoles("admin"))
-	{
-		adminRoutes.POST("/partner-templates", templateHandler.CreatePartnerTemplate)
-		adminRoutes.PUT("/partner-templates/:id", templateHandler.UpdatePartnerTemplate)
-		adminRoutes.POST("/partner-templates/seed", templateHandler.SeedPartnerTemplates)
-	}
+	// 注意：管理员接口已在 admin_router.go 中注册，避免重复注册
 }

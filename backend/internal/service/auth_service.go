@@ -39,13 +39,14 @@ type LoginResponse struct {
 type authServiceImpl struct {
 	userRepo    repository.UserRepository
 	childRepo   repository.ChildRepository
+	classRepo   repository.ClassRepository
 	jwtManager  *jwt.Manager
 	cfg         *config.Config
 	redisClient *repository.RedisClient
 }
 
-func NewAuthService(u repository.UserRepository, c repository.ChildRepository, j *jwt.Manager, cfg *config.Config, r *repository.RedisClient) AuthService {
-	return &authServiceImpl{userRepo: u, childRepo: c, jwtManager: j, cfg: cfg, redisClient: r}
+func NewAuthService(u repository.UserRepository, c repository.ChildRepository, cl repository.ClassRepository, j *jwt.Manager, cfg *config.Config, r *repository.RedisClient) AuthService {
+	return &authServiceImpl{userRepo: u, childRepo: c, classRepo: cl, jwtManager: j, cfg: cfg, redisClient: r}
 }
 
 func (s *authServiceImpl) Login(ctx context.Context, username, password, role string) (*LoginResponse, error) {
@@ -65,7 +66,7 @@ func (s *authServiceImpl) Login(ctx context.Context, username, password, role st
 		return nil, ErrInvalidPassword
 	}
 
-	// 4. 如果是学生角色，获取关联的 ChildID 和 ClassID
+	// 4. 获取关联的 ChildID 和 ClassID
 	var classID, childID uint64
 	var childInfo *model.Child
 	if user.Role == model.RoleStudent {
@@ -74,6 +75,13 @@ func (s *authServiceImpl) Login(ctx context.Context, username, password, role st
 			childID = child.ID
 			classID = child.ClassID
 			childInfo = child
+		}
+	} else if user.Role == model.RoleTeacher {
+		// 教师角色：从 classes 表获取班级ID
+		classes, err := s.classRepo.FindByTeacherID(ctx, user.ID)
+		if err == nil && len(classes) > 0 {
+			// 取第一个班级作为默认班级
+			classID = classes[0].ID
 		}
 	}
 

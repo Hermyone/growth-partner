@@ -36,7 +36,12 @@ func (h *StudentHandler) GetCurrentPartner(c *gin.Context) {
 	}
 
 	// 调用服务获取当前伙伴
-	partner, err := h.studentSvc.GetCurrentPartner(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	partner, err := h.studentSvc.GetCurrentPartner(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -55,7 +60,12 @@ func (h *StudentHandler) GetAllPartners(c *gin.Context) {
 	}
 
 	// 调用服务获取所有伙伴
-	partners, err := h.studentSvc.GetAllPartners(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	partners, err := h.studentSvc.GetAllPartners(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -85,7 +95,12 @@ func (h *StudentHandler) SelectNewPartner(c *gin.Context) {
 	}
 
 	// 调用服务选择新伙伴
-	err := h.studentSvc.SelectNewPartner(c.Request.Context(), studentID.(uint64), req.TemplateID)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.studentSvc.SelectNewPartner(c.Request.Context(), studentIDUint, req.TemplateID)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -115,7 +130,12 @@ func (h *StudentHandler) UpdatePartnerNickname(c *gin.Context) {
 	}
 
 	// 调用服务更新伙伴昵称
-	err := h.studentSvc.UpdatePartnerNickname(c.Request.Context(), studentID.(uint64), req.Nickname)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.studentSvc.UpdatePartnerNickname(c.Request.Context(), studentIDUint, req.Nickname)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -149,7 +169,12 @@ func (h *StudentHandler) GetPartnerGrowthHistory(c *gin.Context) {
 	}
 
 	// 调用服务获取成长值流水
-	records, total, err := h.studentSvc.GetPartnerGrowthHistory(c.Request.Context(), studentID.(uint64), params)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	records, total, err := h.studentSvc.GetPartnerGrowthHistory(c.Request.Context(), studentIDUint, params)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -203,7 +228,12 @@ func (h *StudentHandler) GetMyBehaviors(c *gin.Context) {
 	}
 
 	// 调用服务获取行为记录
-	behaviors, total, err := h.studentSvc.GetMyBehaviors(c.Request.Context(), studentID.(uint64), params)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	behaviors, total, err := h.studentSvc.GetMyBehaviors(c.Request.Context(), studentIDUint, params)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -225,7 +255,12 @@ func (h *StudentHandler) GetBehaviorStats(c *gin.Context) {
 	}
 
 	// 调用服务获取行为统计数据
-	stats, err := h.studentSvc.GetBehaviorStats(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	stats, err := h.studentSvc.GetBehaviorStats(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -246,7 +281,12 @@ func (h *StudentHandler) GetMyBroadcasts(c *gin.Context) {
 	}
 
 	// 调用服务获取广播列表
-	broadcasts, err := h.studentSvc.GetMyBroadcasts(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	broadcasts, err := h.studentSvc.GetMyBroadcasts(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -272,7 +312,12 @@ func (h *StudentHandler) MarkBroadcastAsRead(c *gin.Context) {
 	}
 
 	// 调用服务标记广播为已读
-	err = h.studentSvc.MarkBroadcastAsRead(c.Request.Context(), broadcastID, studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err = h.studentSvc.MarkBroadcastAsRead(c.Request.Context(), broadcastID, studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -291,7 +336,12 @@ func (h *StudentHandler) MarkAllBroadcastsAsRead(c *gin.Context) {
 	}
 
 	// 调用服务一键标记所有广播为已读
-	err := h.studentSvc.MarkAllBroadcastsAsRead(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.studentSvc.MarkAllBroadcastsAsRead(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -312,7 +362,12 @@ func (h *StudentHandler) GetGrowthCalendarMonths(c *gin.Context) {
 	}
 
 	// 调用服务获取月度成长卡列表
-	months, err := h.studentSvc.GetGrowthCalendarMonths(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	months, err := h.studentSvc.GetGrowthCalendarMonths(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -338,7 +393,12 @@ func (h *StudentHandler) GetGrowthCalendarMonth(c *gin.Context) {
 	}
 
 	// 调用服务获取指定月份的成长卡详情
-	card, err := h.studentSvc.GetGrowthCalendarMonth(c.Request.Context(), studentID.(uint64), month)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	card, err := h.studentSvc.GetGrowthCalendarMonth(c.Request.Context(), studentIDUint, month)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -364,7 +424,12 @@ func (h *StudentHandler) GetGrowthCalendarAnnual(c *gin.Context) {
 	}
 
 	// 调用服务获取年度成长画卷数据
-	report, err := h.studentSvc.GetGrowthCalendarAnnual(c.Request.Context(), studentID.(uint64), year)
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	report, err := h.studentSvc.GetGrowthCalendarAnnual(c.Request.Context(), studentIDUint, year)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -383,7 +448,12 @@ func (h *StudentHandler) GetMilestones(c *gin.Context) {
 	}
 
 	// 调用服务获取里程碑列表
-	milestones, err := h.studentSvc.GetMilestones(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	milestones, err := h.studentSvc.GetMilestones(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -404,7 +474,12 @@ func (h *StudentHandler) GetMyBlindboxDraws(c *gin.Context) {
 	}
 
 	// 调用服务获取盲盒抽取记录
-	draws, err := h.studentSvc.GetMyBlindboxDraws(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	draws, err := h.studentSvc.GetMyBlindboxDraws(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return

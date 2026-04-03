@@ -52,7 +52,7 @@ func (r *classRepositoryImpl) FindByID(ctx context.Context, id uint64) (*model.C
 func (r *classRepositoryImpl) FindByTeacherID(ctx context.Context, teacherID uint64) ([]*model.Class, error) {
 	var classes []*model.Class
 	err := r.db.WithContext(ctx).
-		Where("teacher_id = ? AND is_active = ?", teacherID, true).
+		Where("homeroom_teacher_id = ? AND is_active = ?", teacherID, true).
 		Find(&classes).Error
 	return classes, err
 }
@@ -74,6 +74,9 @@ func (r *classRepositoryImpl) FindAll(ctx context.Context, params map[string]int
 	}
 	if className, ok := params["class_name"].(string); ok && className != "" {
 		db = db.Where("class_name LIKE ?", "%"+className+"%")
+	}
+	if classCode, ok := params["class_code"].(string); ok && classCode != "" {
+		db = db.Where("class_code = ?", classCode)
 	}
 	if isActive, ok := params["is_active"].(bool); ok {
 		db = db.Where("is_active = ?", isActive)
@@ -133,6 +136,9 @@ func (r *classRepositoryImpl) Count(ctx context.Context, params map[string]inter
 	}
 	if className, ok := params["class_name"].(string); ok && className != "" {
 		db = db.Where("class_name LIKE ?", "%"+className+"%")
+	}
+	if classCode, ok := params["class_code"].(string); ok && classCode != "" {
+		db = db.Where("class_code = ?", classCode)
 	}
 	if isActive, ok := params["is_active"].(bool); ok {
 		db = db.Where("is_active = ?", isActive)

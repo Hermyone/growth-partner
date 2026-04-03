@@ -186,7 +186,7 @@ func Load() *Config {
 
 	// 验证 AES Key 长度
 	if len(cfg.Encrypt.AESKey) != 32 {
-		log.Fatalf("[Config] AES_KEY 必须恰好是 32 字节，当前长度: %d", len(cfg.Encrypt.AESKey))
+		log.Fatalf("[Config] AES_KEY 必须恰好是 32 字节，当前长度: %d, 当前值: %s", len(cfg.Encrypt.AESKey), cfg.Encrypt.AESKey)
 	}
 
 	global = cfg

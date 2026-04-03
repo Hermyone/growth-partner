@@ -119,7 +119,12 @@ func (h *SunshineHandler) StampSunshine(c *gin.Context) {
 	}
 
 	// 调用服务为学生盖章
-	err := h.sunshineSvc.StampSunshine(c.Request.Context(), teacherID.(uint64), req.StudentID, req.ColorID, req.Subject)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.sunshineSvc.StampSunshine(c.Request.Context(), teacherIDUint, req.StudentID, req.ColorID, req.Subject)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -154,7 +159,12 @@ func (h *SunshineHandler) GetClassStamps(c *gin.Context) {
 	}
 
 	// 调用服务查看班级盖章记录
-	stamps, total, err := h.sunshineSvc.GetClassStamps(c.Request.Context(), teacherID.(uint64), classID, params)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	stamps, total, err := h.sunshineSvc.GetClassStamps(c.Request.Context(), teacherIDUint, classID, params)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -176,7 +186,12 @@ func (h *SunshineHandler) GetStudentStamps(c *gin.Context) {
 	}
 
 	// 调用服务查看学生盖章概况
-	stamps, err := h.sunshineSvc.GetStudentStamps(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	stamps, err := h.sunshineSvc.GetStudentStamps(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -209,7 +224,12 @@ func (h *SunshineHandler) EvaluateSunshineAwards(c *gin.Context) {
 	}
 
 	// 调用服务触发之星评选
-	err := h.sunshineSvc.EvaluateSunshineAwards(c.Request.Context(), teacherID.(uint64), req.ClassID, req.Period)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	err := h.sunshineSvc.EvaluateSunshineAwards(c.Request.Context(), teacherIDUint, req.ClassID, req.Period)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -235,7 +255,12 @@ func (h *SunshineHandler) GetSunshineAwards(c *gin.Context) {
 	}
 
 	// 调用服务查看评选结果列表
-	awards, err := h.sunshineSvc.GetSunshineAwards(c.Request.Context(), teacherID.(uint64), classID)
+	teacherIDUint, ok := teacherID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	awards, err := h.sunshineSvc.GetSunshineAwards(c.Request.Context(), teacherIDUint, classID)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -254,7 +279,12 @@ func (h *SunshineHandler) GetStudentAwards(c *gin.Context) {
 	}
 
 	// 调用服务查看学生之星称号
-	awards, err := h.sunshineSvc.GetStudentAwards(c.Request.Context(), studentID.(uint64))
+	studentIDUint, ok := studentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	awards, err := h.sunshineSvc.GetStudentAwards(c.Request.Context(), studentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return
@@ -280,7 +310,12 @@ func (h *SunshineHandler) GetChildSunshine(c *gin.Context) {
 	}
 
 	// 调用服务查看孩子阳光章情况
-	sunshine, err := h.sunshineSvc.GetChildSunshine(c.Request.Context(), childID, parentID.(uint64))
+	parentIDUint, ok := parentID.(uint64)
+	if !ok {
+		middleware.ResponseError(c, 401, "UNAUTHORIZED", "无效的用户ID")
+		return
+	}
+	sunshine, err := h.sunshineSvc.GetChildSunshine(c.Request.Context(), childID, parentIDUint)
 	if err != nil {
 		middleware.ResponseError(c, 500, "INTERNAL_ERROR", err.Error())
 		return

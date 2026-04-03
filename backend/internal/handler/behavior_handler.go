@@ -67,15 +67,20 @@ func (h *BehaviorHandler) RecordBehavior(c *gin.Context) {
 	}
 
 	// 返回成功结果
-	middleware.ResponseOK(c, gin.H{
+	response := gin.H{
 		"behavior_record": record,
-		"growth_result": gin.H{
+	}
+	
+	if growthResult != nil {
+		response["growth_result"] = gin.H{
 			"is_evolved":      growthResult.IsEvolved,
 			"current_points":  growthResult.Partner.GrowthPoints,
 			"partner_message": growthResult.PartnerMessage,
 			"evolution_msg":   growthResult.EvolutionMsg,
-		},
-	})
+		}
+	}
+	
+	middleware.ResponseOK(c, response)
 }
 
 // GetClassBehaviors 获取班级行为动态 (老师/园长调用)

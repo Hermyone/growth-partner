@@ -283,15 +283,14 @@ func (s *adminServiceImpl) PromoteClass(ctx context.Context, classID uint64, new
 		IsActive:   true,
 	}
 
-	if err := s.classRepo.Create(ctx, newClass); err != nil {
+	if err := tx.Create(newClass).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
 	// 获取原班级的所有学生
-	childParams := map[string]interface{}{"class_id": existingClass.ID}
-	children, _, err := s.childRepo.FindAll(ctx, childParams)
-	if err != nil {
+	var children []*model.Child
+	if err := tx.Where("class_id = ?", existingClass.ID).Find(&children).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -299,7 +298,7 @@ func (s *adminServiceImpl) PromoteClass(ctx context.Context, classID uint64, new
 	// 更新所有学生的班级ID
 	for _, child := range children {
 		child.ClassID = newClass.ID
-		if err := s.childRepo.Update(ctx, child); err != nil {
+		if err := tx.Save(child).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
@@ -307,7 +306,7 @@ func (s *adminServiceImpl) PromoteClass(ctx context.Context, classID uint64, new
 
 	// 停用原班级
 	existingClass.IsActive = false
-	if err := s.classRepo.Update(ctx, existingClass); err != nil {
+	if err := tx.Save(existingClass).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -453,9 +452,7 @@ func (s *adminServiceImpl) BatchImportStudents(ctx context.Context, data []*mode
 }
 
 func (s *adminServiceImpl) GetStudents(ctx context.Context, params map[string]interface{}) ([]*model.Child, int64, error) {
-	// 注意：由于ChildRepository没有FindAll方法，这里暂时返回空列表
-	// 实际项目中需要在ChildRepository中添加FindAll方法
-	return []*model.Child{}, 0, nil
+	return s.childRepo.FindAll(ctx, params)
 }
 
 func (s *adminServiceImpl) CreateStudent(ctx context.Context, child *model.Child) error {

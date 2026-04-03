@@ -77,7 +77,7 @@ func main() {
 	// ─── 6. 初始化 Service 层 ─────────────────────────────────
 	broadcastSvc := service.NewBroadcastService(rdb.Client)
 	partnerSvc := service.NewPartnerService(partnerRepo, growthRepo, templateRepo, milestoneRepo, broadcastSvc)
-	authSvc := service.NewAuthService(userRepo, childRepo, jwtManager, cfg, rdb)
+	authSvc := service.NewAuthService(userRepo, childRepo, classRepo, jwtManager, cfg, rdb)
 	behaviorSvc := service.NewBehaviorService(behaviorRepo, partnerSvc, broadcastSvc)
 	battleSvc := service.NewBattleService(battleRepo, questionRepo, childRepo)
 	blindboxSvc := service.NewBlindboxService(blindRepo, db) // blindboxRepo 待实现
