@@ -23,8 +23,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      # 数据持久化卷（Docker 管理卷，Mac/Windows 路径无冲突）
-      - postgres_data:/var/lib/postgresql/data
+      # 数据持久化卷（本地目录，确保数据不会丢失）
+      - ./data/postgres:/var/lib/postgresql/data
       # 初始化脚本（只在数据卷为空时执行一次）
       - ./backend/migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
@@ -54,7 +54,8 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      # 数据持久化卷（本地目录，确保数据不会丢失）
+      - ./data/redis:/data
     environment:
       TZ: Asia/Shanghai
     healthcheck:
@@ -122,10 +123,6 @@ services:
 # 数据卷定义（使用 Docker 命名卷，完全跨平台兼容）
 # ─────────────────────────────────────────────────────────────
 volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
   go_module_cache:
     driver: local
   go_build_cache:
