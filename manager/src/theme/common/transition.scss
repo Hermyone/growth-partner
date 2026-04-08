@@ -1,0 +1,145 @@
+/* 页面切换动画
+------------------------------- */
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+	will-change: transform;
+	transition: all 0.3s ease;
+}
+// slide-right
+.slide-right-enter-from {
+	opacity: 0;
+	transform: translateX(-20px);
+}
+.slide-right-leave-to {
+	opacity: 0;
+	transform: translateX(20px);
+}
+// slide-left
+.slide-left-enter-from {
+	@extend .slide-right-leave-to;
+}
+.slide-left-leave-to {
+	@extend .slide-right-enter-from;
+}
+// opacitys
+.opacitys-enter-active,
+.opacitys-leave-active {
+	will-change: transform;
+	transition: all 0.3s ease;
+}
+.opacitys-enter-from,
+.opacitys-leave-to {
+	opacity: 0;
+}
+
+/* Breadcrumb 面包屑过渡动画
+------------------------------- */
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+	transition: all 0.5s ease;
+}
+.breadcrumb-enter-from,
+.breadcrumb-leave-active {
+	opacity: 0;
+	transform: translateX(20px);
+}
+.breadcrumb-leave-active {
+	position: absolute;
+	z-index: -1;
+}
+
+/* logo 过渡动画
+------------------------------- */
+@keyframes logoAnimation {
+	0% {
+		transform: scale(0);
+	}
+	80% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* 404、401 过渡动画
+------------------------------- */
+@keyframes error-num {
+	0% {
+		transform: translateY(60px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+@keyframes error-img {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@keyframes error-img-two {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes moveIn {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+@keyframes moveOut {
+	from {
+		transform: translateY(0);
+	}
+	to {
+		transform: translateY(100%);
+	}
+}
+
+/* 定义一个淡入淡出动画 */
+@keyframes fadeInOut {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+// 从右向左展开
+@keyframes expandFromRight {
+	from {
+		width: 0;
+	}
+	to {
+		width: 300px;
+	}
+}
+
+// 从左向右关闭
+@keyframes closeFromLeft {
+	from {
+		width: 300px;
+	}
+	to {
+		width: 0;
+	}
+}

@@ -1,0 +1,18 @@
+export const DemoNoticeList = [
+	{'kind': 0, 'id':1, 'title':'系统广播测试', 'level':0, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':2, 'title':'系统广播测试', 'level':0, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':3, 'title':'系统广播测试', 'level':1, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':4, 'title':'系统广播测试', 'level':1, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':5, 'title':'系统广播测试', 'level':0, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':6, 'title':'系统广播测试', 'level':1, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':7, 'title':'系统广播测试', 'level':1, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':8, 'title':'系统广播测试', 'level':1, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 0, 'id':9, 'title':'系统广播测试', 'level':1, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':10, 'title':'站内信测试',  'level':0, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':11, 'title':'站内信测试',  'level':0, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':12, 'title':'站内信测试',  'level':1, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':13, 'title':'站内信测试',  'level':0, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':14, 'title':'站内信测试',  'level':1, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':15, 'title':'站内信测试',  'level':1, isread: 1, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+	{'kind': 1, 'id':16, 'title':'站内信测试',  'level':1, isread: 0, 'content':'测试数据', 'time':'2023-09-01 15:30:00'},
+]

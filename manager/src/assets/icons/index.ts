@@ -1,0 +1,37 @@
+export { default as Vue } from './Vue.vue';
+export { default as Code } from './Code.vue';
+export { default as Wechat } from './Wechat.vue';
+export { default as BugFill } from './BugFill.vue';
+export { default as BugLine } from './BugLine.vue';
+export { default as FileWord } from './FileWord.vue';
+export { default as FileExcel } from './FileExcel.vue';
+export { default as FilePpt } from './FilePpt.vue';
+export { default as Organization } from './Organization.vue';
+export { default as Upload } from './Upload.vue';
+export { default as Download } from './Download.vue';
+export { default as Home } from './Home.vue';
+export { default as Emote } from './Emote.vue';
+export { default as More } from './More.vue';
+
+// Weather 图标
+export { default as WeatherBlizzard } from './weather/blizzard.vue';
+export { default as WeatherClear } from './weather/clear.vue';
+export { default as WeatherCloudy } from './weather/cloudy.vue';
+export { default as WeatherCloudyEx } from './weather/cloudy-ex.vue';
+export { default as WeatherExtremelyHeavyRainstorm } from './weather/extremely-heavy-rainstorm.vue';
+export { default as WeatherFog } from './weather/fog.vue';
+export { default as WeatherFrozenSnow } from './weather/frozen-snow.vue';
+export { default as WeatherHaze } from './weather/haze.vue';
+export { default as WeatherHeavyRain } from './weather/heavy-rain.vue';
+export { default as WeatherHeavyRainstorm } from './weather/heavy-rainstorm.vue';
+export { default as WeatherLightRain } from './weather/light-rain.vue';
+export { default as WeatherMajorSnow } from './weather/major-snow.vue';
+export { default as WeatherModerateRain } from './weather/moderate-rain.vue';
+export { default as WeatherRainstorm } from './weather/rainstorm.vue';
+export { default as WeatherSandstorm } from './weather/sandstorm.vue';
+export { default as WeatherShower } from './weather/shower.vue';
+export { default as WeatherSleet } from './weather/sleet.vue';
+export { default as WeatherSnow } from './weather/snow.vue';
+export { default as WeatherSnowShower } from './weather/snow-shower.vue';
+export { default as WeatherSpit } from './weather/spit.vue';
+export { default as WeatherThunderstorm } from './weather/thunderstorm.vue';
